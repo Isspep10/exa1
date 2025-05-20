@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Examen de Física</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    .hidden {
+      display: none;
+    }
+    .question {
+      margin-bottom: 20px;
+    }
+    #resultados {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Examen de Física - Ondas</h1>
+
+  <div id="registro">
+    <label>Nombre: <input type="text" id="nombre"></label><br><br>
+    <label>Cédula / ID: <input type="text" id="cedula"></label><br><br>
+    <button onclick="iniciarExamen()">Hacer examen</button>
+  </div>
+
+  <div id="examen" class="hidden">
+    <form id="formExamen"></form>
+    <button onclick="finalizarExamen()">Finalizar</button>
+  </div>
+
+  <div id="resultados">
+    <h2>Resultados anteriores</h2>
+    <ul id="listaResultados"></ul>
+  </div>
+
+  <script>
+    const preguntas = [
+      '¿Qué es un péndulo simple?',
+      '¿Qué afecta el período de un péndulo?',
+      '¿Cuál es la fórmula para el período de un péndulo?',
+      '¿Qué es una onda mecánica?',
+      '¿Qué es una onda longitudinal?',
+      'Calcula el período de un péndulo de 1 metro (g = 9.8 m/s²).',
+      'Calcula la frecuencia de una onda de 0.5 s de período.',
+      'Una onda tiene una velocidad de 340 m/s y una frecuencia de 170 Hz. ¿Cuál es su longitud de onda?',
+      'Calcula la energía almacenada en un resorte de constante 200 N/m y compresión de 0.1 m.',
+      '¿Qué diferencia hay entre onda sonora y onda luminosa?',
+      '¿Cuál es la velocidad del sonido en el aire?',
+      'Una onda sonora tiene una longitud de onda de 0.5 m y frecuencia de 680 Hz. ¿Cuál es su velocidad?',
+      '¿Qué tipo de onda es la luz?',
+      'Calcula la frecuencia de una onda de luz con longitud de onda de 600 nm (c = 3x10^8 m/s).',
+      '¿Qué es la amplitud de una onda?'
+    ];
+
+    const respuestas = {
+      5: '2.01 s',
+      6: '2 Hz',
+      7: '2 m',
+      8: '1 J',
+      11: '340 m/s',
+      13: '5x10^14 Hz'
+    };
+
+    function iniciarExamen() {
+      const nombre = document.getElementById('nombre').value;
+      const cedula = document.getElementById('cedula').value;
+      if (!nombre || !cedula) {
+        alert('Por favor ingrese su nombre y cédula.');
+        return;
+      }
+
+      document.getElementById('registro').classList.add('hidden');
+      document.getElementById('examen').classList.remove('hidden');
+
+      const seleccionadas = preguntas.sort(() => 0.5 - Math.random()).slice(0, 5);
+      const form = document.getElementById('formExamen');
+      form.innerHTML = '';
+
+      seleccionadas.forEach((pregunta, index) => {
+        form.innerHTML += `
+          <div class="question">
+            <label>${pregunta}</label><br>
+            <input type="text" name="respuesta${index}" required>
+          </div>
+        `;
+      });
+    }
+
+    function finalizarExamen() {
+      const nombre = document.getElementById('nombre').value;
+      const cedula = document.getElementById('cedula').value;
+      const inputs = document.querySelectorAll('#formExamen input');
+      let correctas = 0;
+      inputs.forEach((input, i) => {
+        const preguntaIndex = preguntas.indexOf(input.parentElement.querySelector('label').textContent);
+        if (respuestas[preguntaIndex] && input.value.trim() === respuestas[preguntaIndex]) {
+          correctas++;
+        }
+      });
+
+      const resultadoTexto = `${nombre} (${cedula}): ${correctas} respuestas correctas de 5`;
+      const li = document.createElement('li');
+      li.textContent = resultadoTexto;
+      document.getElementById('listaResultados').appendChild(li);
+
+      alert('Examen finalizado. Resultado guardado.');
+      location.reload();
+    }
+  </script>
+</body>
+</html>
